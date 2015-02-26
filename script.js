@@ -2,8 +2,9 @@
 
 var width = parseInt(d3.select("body").style("width").slice(0, -2)),
     //height  = parseInt(d3.select("body").style("height").slice(0,-2))
-    height = 800,
-    padding = 20;
+    //height = 800,
+    height = $(window).height() - 20;
+padding = 20;
 
 var logistic = function(x, theta) {
     var mu = 0;
@@ -12,7 +13,7 @@ var logistic = function(x, theta) {
     return y;
 }
 
-xs = _.range(0.01, 5, .01)
+xs = _.range(0.01, 5, .07)
 
 thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their values from .1-.7
     .domain([0, 20])
@@ -70,7 +71,7 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height + 2 * padding)
     .append("g")
-    .attr("transform", "translate(" + padding + "," + padding + ")");
+    .attr("transform", "translate(" + padding + "," + 0 + ")");
 
 function change(newData) {
     svg.selectAll(".line")
@@ -95,6 +96,6 @@ svg.selectAll(".line")
     // });
 
 d3.select("svg")
-    .on("click", function(){
+    .on("click", function() {
         change(logistic)
     })
