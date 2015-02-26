@@ -15,6 +15,9 @@ var logistic = function(x, theta) {
 
 xs = _.range(0.01, 5, .07)
 
+var colors = ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,144)','rgb(224,243,248)','rgb(171,217,233)','rgb(116,173,209)','rgb(69,117,180)','rgb(49,54,149)']
+
+
 thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their values from .1-.7
     .domain([0, 20])
     .range([0.1, 0.7])
@@ -74,21 +77,21 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + padding + "," + 0 + ")");
 
 var title = svg.append("text")
-        .text("The Logistic Distribution")
-        .attr("font-size", 40)
-        .attr("font-family", "courier")
-        .attr("text-anchor", "end")
-        .attr("fill-opacity", 0.0)
-        .attr("x", x(4.7))
-        .attr("y", y(3))
+    .text("The Logistic Distribution")
+    .attr("font-size", 40)
+    .attr("font-family", "courier")
+    .attr("text-anchor", "end")
+    .attr("fill-opacity", 0.0)
+    .attr("x", x(4.7))
+    .attr("y", y(3))
 
 var intro = svg.append("text")
-        .text("Click!")
-        .attr("font-size", 45)
-        .attr("font-family", "courier")
-        .attr("text-anchor", "middle")
-        .attr("x", x(2.5))
-        .attr("y", y(2.51))
+    .text("Click!")
+    .attr("font-size", 45)
+    .attr("font-family", "courier")
+    .attr("text-anchor", "middle")
+    .attr("x", x(2.5))
+    .attr("y", y(2.51))
 
 function change(newData) {
     svg.selectAll(".line")
@@ -120,6 +123,9 @@ svg.selectAll(".line")
     .enter().append("path")
     .attr("class", "line")
     .attr("d", line)
+    .style("stroke", function(d,i){
+        return colors[i%10]
+    })
     // .on("mouseover", function(d) {
     //     change(logistic)
     // });
