@@ -73,6 +73,23 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + padding + "," + 0 + ")");
 
+var title = svg.append("text")
+        .text("The Logistic Distribution")
+        .attr("font-size", 45)
+        .attr("font-family", "courier")
+        .attr("text-anchor", "middle")
+        .attr("fill-opacity", 0.0)
+        .attr("x", x(3.3))
+        .attr("y", y(3))
+
+var intro = svg.append("text")
+        .text("Click!")
+        .attr("font-size", 45)
+        .attr("font-family", "courier")
+        .attr("text-anchor", "middle")
+        .attr("x", x(2.5))
+        .attr("y", y(2.51))
+
 function change(newData) {
     svg.selectAll(".line")
         .data(newData)
@@ -83,6 +100,18 @@ function change(newData) {
         })
         .attr("class", "line")
         .attr("d", line);
+
+    title
+        .transition()
+        .duration(2000)
+        .attr("fill-opacity", 1)
+
+    intro
+        .transition()
+        .duration(800)
+        .attr("fill-opacity", 0)
+        .remove()
+
 }
 
 
