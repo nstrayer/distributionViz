@@ -6,35 +6,42 @@ var width = parseInt(d3.select("body").style("width").slice(0, -2)),
     height = $(window).height() - 20;
 padding = 20;
 
-var logistic = function(x, theta) {
+var logistic = function(x, theta, i) {
     var mu = 0;
-    var y = (1 / (Math.sqrt(2 * Math.PI) * theta)) * (1 / x) *
+    sign = 1
+        // if (i%2 == 0){
+        //     sign = -1
+        // }
+    var y = sign * (1 / (Math.sqrt(2 * Math.PI) * theta)) * (1 / x) *
         Math.exp(-Math.pow((Math.log(x) - mu), 2) / (2 * Math.pow(theta, 2)))
     return y;
 }
 
+var numOfLines = 22;
+
 xs = _.range(0.01, 5, .07)
 
-var colors = ['rgb(165,0,38)','rgb(215,48,39)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,144)','rgb(224,243,248)','rgb(171,217,233)','rgb(116,173,209)','rgb(69,117,180)','rgb(49,54,149)']
+var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,144)', 'rgb(224,243,248)', 'rgb(171,217,233)', 'rgb(116,173,209)', 'rgb(69,117,180)', 'rgb(49,54,149)']
 
 
 thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their values from .1-.7
-    .domain([0, 20])
-    .range([0.1, 0.7])
+    .domain([0, numOfLines])
+    .range([0.7, 0.1])
 
-var numOfLines = 20;
+
 
 var yPos = d3.scale.linear() //scalling for creating horizontal lines
     .domain([0, numOfLines])
-    .range([0, 5])
+    .range([0, 4])
+    //.range([-5, 5])
 
 
-//default flat lines:
+
 logistic = _.map(d3.range(numOfLines), function(i) {
     toReturn = _.map(xs, function(num) {
         return {
             "x": num,
-            "y": logistic(num, thetaMap(i))
+            "y": logistic(num, thetaMap(i), i)
         }
     })
 
@@ -58,7 +65,8 @@ var x = d3.scale.linear()
 
 
 var y = d3.scale.linear()
-    .domain([0, 5])
+    .domain([0, 4])
+    //.domain([-5, 5])
     .range([height, 0]);
 
 var line = d3.svg.line()
@@ -83,7 +91,7 @@ var title = svg.append("text")
     .attr("text-anchor", "end")
     .attr("fill-opacity", 0.0)
     .attr("x", x(4.7))
-    .attr("y", y(3))
+    .attr("y", y(2.5))
 
 var intro = svg.append("text")
     .text("Click!")
@@ -91,7 +99,16 @@ var intro = svg.append("text")
     .attr("font-family", "courier")
     .attr("text-anchor", "middle")
     .attr("x", x(2.5))
-    .attr("y", y(2.51))
+    .attr("y", y(2.01))
+
+// var theta = svg.append("text")
+//     .text("Theta")
+//     .attr("font-size", 45)
+//     .attr("font-family", "courier")
+//     .attr("text-anchor", "middle")
+//     .attr("x", x(4))
+//     .attr("y", y(.51))
+
 
 function change(newData) {
     svg.selectAll(".line")
@@ -106,7 +123,7 @@ function change(newData) {
 
     title
         .transition()
-        .duration(2000)
+        .duration(4000)
         .attr("fill-opacity", 1)
 
     intro
@@ -123,11 +140,21 @@ svg.selectAll(".line")
     .enter().append("path")
     .attr("class", "line")
     .attr("d", line)
-    .style("stroke", function(d,i){
-        return colors[i%10]
+    .style("stroke-width", 2)
+    .style("stroke", function(d, i) {
+        return colors[i % 10]
     })
-    // .on("mouseover", function(d) {
-    //     change(logistic)
+    // .on("mouseover", function(d,i) {
+    //     theta
+    //         .text(function(d,i){
+    //             return thetaMap(i)
+    //         })
+    // })
+    // .on("mouseout", function(d){
+    //     d3.select(this)
+    //       .transition()
+    //       .duration(1000)
+    //       .style("stroke-width", 2)
     // });
 
 d3.select("svg")
