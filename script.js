@@ -1,19 +1,14 @@
-// //make the distribution data
 //http://stackoverflow.com/questions/8689498/drawing-multiple-lines-in-d3-js
 
-
-var margin = {
-        top: 30,
-        right: 30,
-        bottom: 30,
-        left: 30
-    },
-    width = 1000 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var width	= parseInt(d3.select("body").style("width").slice(0,-2)),
+    //height  = parseInt(d3.select("body").style("height").slice(0,-2))
+	height  = 800,
+    padding = 20;
 
 var logistic = function(x, theta) {
     var mu = 0;
-    var y = (1 / (Math.sqrt(2 * Math.PI) * theta)) * (1 / x) * Math.exp(-Math.pow((Math.log(x) - mu), 2) / (2 * Math.pow(theta, 2)))
+    var y = (1 / (Math.sqrt(2 * Math.PI) * theta)) * (1 / x) *
+		Math.exp(-Math.pow((Math.log(x) - mu), 2) / (2 * Math.pow(theta, 2)))
     return y;
 }
 
@@ -31,8 +26,8 @@ var yPos = d3.scale.linear() //scalling for creating horizontal lines
 
 
 //default flat lines:
-logistic = _.map(d3.range(numOfLines), function(i){
-	toReturn = _.map(xs, function(num) {
+logistic = _.map(d3.range(numOfLines), function(i) {
+    toReturn = _.map(xs, function(num) {
         return {
             "x": num,
             "y": logistic(num, thetaMap(i))
@@ -42,8 +37,8 @@ logistic = _.map(d3.range(numOfLines), function(i){
     return toReturn;
 })
 
-horizontal = _.map(d3.range(numOfLines), function(i){
-	toReturn = _.map(xs, function(num) {
+horizontal = _.map(d3.range(numOfLines), function(i) {
+    toReturn = _.map(xs, function(num) {
         return {
             "x": num,
             "y": yPos(i)
@@ -72,19 +67,21 @@ var line = d3.svg.line()
     });
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width )
+    .attr("height", height + 2*padding)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + padding + "," + padding + ")");
 
-function change(newData){
-	svg.selectAll(".line")
-	    .data(newData)
-	    .transition()
-		.duration(2000)
-		.delay(function(d,i){return 30*i})
-	    .attr("class", "line")
-	    .attr("d", line);
+function change(newData) {
+    svg.selectAll(".line")
+        .data(newData)
+        .transition()
+        .duration(1500)
+        .delay(function(d, i) {
+            return 70 * i
+        })
+        .attr("class", "line")
+        .attr("d", line);
 }
 
 
@@ -93,6 +90,6 @@ svg.selectAll(".line")
     .enter().append("path")
     .attr("class", "line")
     .attr("d", line)
-	.on("mouseover", function(){
-		change(logistic)
-	});
+    .on("mouseover", function(d) {
+        change(logistic)
+    });
