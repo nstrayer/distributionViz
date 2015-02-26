@@ -25,49 +25,51 @@ thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their value
 var numOfLines = 30;
 
 var yPos = d3.scale.linear() //scalling for creating horizontal lines
-		.domain([0, numOfLines])
-		.range([0, 5])
+    .domain([0, numOfLines])
+    .range([0, 5])
 
 
 //default flat lines:
-dataBegin = _.map(xs, function(num) {
-    var returnObj = {}
-    returnObj.x = num
 
+dataTest = _.map(d3.range(numOfLines), function(i){
+	toReturn = _.map(xs, function(num) {
+        return {
+            "x": num,
+            "y": logistic(num, thetaMap(i))
+        }
+    })
 
-    for (i in d3.range(numOfLines)) {
-        returnObj[i] = yPos(i)
-}
-    return returnObj;
+    return toReturn;
 })
 
+dataStart = _.map(d3.range(numOfLines), function(i){
+	toReturn = _.map(xs, function(num) {
+        return {
+            "x": num,
+            "y": yPos(i)
+        }
+    })
 
-
-dataTest = _.map(xs, function(num) {
-    var returnObj = {}
-    returnObj.x = num
-
-    for (i in d3.range(numOfLines)) { //do 20 different values of theta
-        returnObj[i] = logistic(num, thetaMap(i)) //fill in the ith value with the log at mapped theta.
-    }
-
-    return returnObj;
+    return toReturn;
 })
 
 var x = d3.scale.linear()
+    .domain([0, 5])
     .range([0, width]);
 
+
 var y = d3.scale.linear()
+    .domain([0, 5])
     .range([height, 0]);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
-
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) {
+        return x(d.x);
+    })
+    .y(function(d) {
+        return y(d.y);
+    });
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -75,38 +77,76 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var group = svg.append("g")
 
-x.domain(d3.extent(dataTest, function(d) {
-    return d.x;
-}));
+svg.selectAll(".line")
+    .data(dataStart)
+    .enter().append("path")
+    .attr("class", "line")
+    .attr("d", line);
 
-y.domain([0,5]);
+// svg.selectAll(".line")
+//     .data(dataTest)
+//     .transition()
+// 	.duration(2000)
+// 	.delay(function(d,i){return 30*i})
+//     .attr("class", "line")
+//     .attr("d", line);
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
-
-svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis)
-
-
-for (i in d3.range(numOfLines)){
-
-	var line = d3.svg.line()
-	    .x(function(d) {
-	        return x(d.x);
-	    })
-	    .y(function(d) {
-	        return y(d[i]);
-	    });
-
-	svg.append("path")
-	    .datum(dataTest)
-	    .attr("class", "line")
-	    .attr("d", line)
-		.on("mouseover", function(d){
-			d3.select(this).attr("fill", "red")
-		});
-}
+//
+// var x = d3.scale.linear()
+//     .range([0, width]);
+//
+// var y = d3.scale.linear()
+//     .range([height, 0]);
+//
+// var xAxis = d3.svg.axis()
+//     .scale(x)
+//     .orient("bottom");
+//
+// var yAxis = d3.svg.axis()
+//     .scale(y)
+//     .orient("left");
+//
+//
+// var svg = d3.select("body").append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//     .append("g")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+//
+//
+// x.domain(d3.extent(dataTest, function(d) {
+//     return d.x;
+// }));
+//
+// y.domain([0,5]);
+//
+// svg.append("g")
+//     .attr("class", "x axis")
+//     .attr("transform", "translate(0," + height + ")")
+//     .call(xAxis);
+//
+// svg.append("g")
+//     .attr("class", "y axis")
+//     .call(yAxis)
+//
+//
+// for (i in d3.range(numOfLines)){
+//
+// 	var line = d3.svg.line()
+// 	    .x(function(d) {
+// 	        return x(d.x);
+// 	    })
+// 	    .y(function(d) {
+// 	        return y(d[i]);
+// 	    });
+//
+// 	svg.append("path")
+// 	    .datum(dataTest)
+// 	    .attr("class", "line")
+// 	    .attr("d", line)
+// 		.on("mouseover", function(d){
+// 			d3.select(this).attr("fill", "red")
+// 		});
+// }
