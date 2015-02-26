@@ -1,14 +1,14 @@
 //http://stackoverflow.com/questions/8689498/drawing-multiple-lines-in-d3-js
 
-var width	= parseInt(d3.select("body").style("width").slice(0,-2)),
+var width = parseInt(d3.select("body").style("width").slice(0, -2)),
     //height  = parseInt(d3.select("body").style("height").slice(0,-2))
-	height  = 800,
+    height = 800,
     padding = 20;
 
 var logistic = function(x, theta) {
     var mu = 0;
     var y = (1 / (Math.sqrt(2 * Math.PI) * theta)) * (1 / x) *
-		Math.exp(-Math.pow((Math.log(x) - mu), 2) / (2 * Math.pow(theta, 2)))
+        Math.exp(-Math.pow((Math.log(x) - mu), 2) / (2 * Math.pow(theta, 2)))
     return y;
 }
 
@@ -67,8 +67,8 @@ var line = d3.svg.line()
     });
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width )
-    .attr("height", height + 2*padding)
+    .attr("width", width)
+    .attr("height", height + 2 * padding)
     .append("g")
     .attr("transform", "translate(" + padding + "," + padding + ")");
 
@@ -90,6 +90,11 @@ svg.selectAll(".line")
     .enter().append("path")
     .attr("class", "line")
     .attr("d", line)
-    .on("mouseover", function(d) {
+    // .on("mouseover", function(d) {
+    //     change(logistic)
+    // });
+
+d3.select("svg")
+    .on("click", function(){
         change(logistic)
-    });
+    })
