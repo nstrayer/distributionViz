@@ -1,10 +1,11 @@
-//http://stackoverflow.com/questions/8689498/drawing-multiple-lines-in-d3-js
-
 var width = parseInt(d3.select("body").style("width").slice(0, -2)),
-    //height  = parseInt(d3.select("body").style("height").slice(0,-2))
-    //height = 800,
-    height = $(window).height() - 20;
-padding = 20;
+    height = $(window).height() - 20,
+    padding = 20,
+    numOfLines = 22,
+    xs = _.range(0.01, 5, .07),
+    colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,144)',
+        'rgb(224,243,248)', 'rgb(171,217,233)', 'rgb(116,173,209)', 'rgb(69,117,180)', 'rgb(49,54,149)'
+    ];
 
 var logistic = function(x, theta, i) {
     var mu = 0;
@@ -17,27 +18,27 @@ var logistic = function(x, theta, i) {
     return y;
 }
 
-var numOfLines = 22;
-
-xs = _.range(0.01, 5, .07)
-
-var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,144)', 'rgb(224,243,248)', 'rgb(171,217,233)', 'rgb(116,173,209)', 'rgb(69,117,180)', 'rgb(49,54,149)']
-
-
-thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their values from .1-.7
+// The Scales:
+var thetaMap = d3.scale.linear() //name the values from 0 to 20 and make their values from .1-.7
     .domain([0, numOfLines])
     .range([0.7, 0.1])
-
-
 
 var yPos = d3.scale.linear() //scalling for creating horizontal lines
     .domain([0, numOfLines])
     .range([0, 4])
     //.range([-5, 5])
 
+var x = d3.scale.linear()
+    .domain([0, 5])
+    .range([0, width]);
 
+var y = d3.scale.linear()
+    .domain([0, 4])
+    //.domain([-5, 5])
+    .range([height, 0]);
 
-logistic = _.map(d3.range(numOfLines), function(i) {
+// The line data:
+var logistic = _.map(d3.range(numOfLines), function(i) {
     toReturn = _.map(xs, function(num) {
         return {
             "x": num,
@@ -48,7 +49,7 @@ logistic = _.map(d3.range(numOfLines), function(i) {
     return toReturn;
 })
 
-horizontal = _.map(d3.range(numOfLines), function(i) {
+var horizontal = _.map(d3.range(numOfLines), function(i) {
     toReturn = _.map(xs, function(num) {
         return {
             "x": num,
@@ -59,16 +60,7 @@ horizontal = _.map(d3.range(numOfLines), function(i) {
     return toReturn;
 })
 
-var x = d3.scale.linear()
-    .domain([0, 5])
-    .range([0, width]);
-
-
-var y = d3.scale.linear()
-    .domain([0, 4])
-    //.domain([-5, 5])
-    .range([height, 0]);
-
+// The d3 stuff
 var line = d3.svg.line()
     .interpolate("basis")
     .x(function(d) {
@@ -143,19 +135,8 @@ svg.selectAll(".line")
     .style("stroke-width", 2)
     .style("stroke", function(d, i) {
         return colors[i % 10]
-    })
-    // .on("mouseover", function(d,i) {
-    //     theta
-    //         .text(function(d,i){
-    //             return thetaMap(i)
-    //         })
-    // })
-    // .on("mouseout", function(d){
-    //     d3.select(this)
-    //       .transition()
-    //       .duration(1000)
-    //       .style("stroke-width", 2)
-    // });
+    });
+
 
 d3.select("svg")
     .on("click", function() {
